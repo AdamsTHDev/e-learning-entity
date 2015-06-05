@@ -11,11 +11,13 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import com.adms.common.domain.BaseDomain;
+import org.hibernate.annotations.Formula;
+
+import com.adms.common.domain.BaseAuditDomain;
 
 @Entity
 @Table(name="STUDENT")
-public class Student extends BaseDomain {
+public class Student extends BaseAuditDomain {
 
 	private static final long serialVersionUID = -2194350095604692690L;
 
@@ -36,6 +38,9 @@ public class Student extends BaseDomain {
 	@Column(name="LAST_NAME")
 	private String lastName;
 	
+	@Formula(value = " concat(first_name, ' ', last_name) ")
+	private String fullName;
+	
 	@Column(name="DATE_OF_BIRTH")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date dateOfBirth;
@@ -43,13 +48,13 @@ public class Student extends BaseDomain {
 	@Column(name="STREET_ADDRESS")
 	private String streetAddress;
 	
-	@Column(name="CITI")
-	private String citi;
+	@Column(name="CITY")
+	private String city;
 	
 	@Column(name="POST_CODE")
 	private String postCode;
 	
-	@Column(name="HONE_PHONE")
+	@Column(name="HOME_PHONE")
 	private String homePhone;
 	
 	@Column(name="OFFICE_PHONE")
@@ -61,6 +66,14 @@ public class Student extends BaseDomain {
 	@Column(name="EMAIL_ADDRESS")
 	private String emailAddress;
 
+	public Student() {
+		
+	}
+	
+	public Student(String citizenId) {
+		this.citizenId = citizenId;
+	}
+	
 	public Long getId() {
 		return id;
 	}
@@ -117,12 +130,12 @@ public class Student extends BaseDomain {
 		this.streetAddress = streetAddress;
 	}
 
-	public String getCiti() {
-		return citi;
+	public String getCity() {
+		return city;
 	}
 
-	public void setCiti(String citi) {
-		this.citi = citi;
+	public void setCity(String city) {
+		this.city = city;
 	}
 
 	public String getPostCode() {
@@ -163,5 +176,13 @@ public class Student extends BaseDomain {
 
 	public void setEmailAddress(String emailAddress) {
 		this.emailAddress = emailAddress;
+	}
+
+	public String getFullName() {
+		return fullName;
+	}
+
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
 	}
 }

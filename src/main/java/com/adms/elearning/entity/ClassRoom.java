@@ -49,4 +49,11 @@ public class ClassRoom extends BaseDomain {
 	public void setClassName(String className) {
 		this.className = className;
 	}
+
+	@Override
+	public String toString() {
+		return "ClassRoom [id=" + id + ", classCode=" + classCode
+				+ ", className=" + className + "]";
+	}
+	
 }

@@ -9,11 +9,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.adms.common.domain.BaseDomain;
+import com.adms.common.domain.BaseAuditDomain;
 
 @Entity
 @Table(name="COURSE_RESULT")
-public class CourseResult extends BaseDomain {
+public class CourseResult extends BaseAuditDomain {
 
 	private static final long serialVersionUID = -8427125943157285023L;
 
@@ -29,6 +29,15 @@ public class CourseResult extends BaseDomain {
 	@ManyToOne
 	@JoinColumn(name="ANSWER")
 	private Answer answer;
+	
+	public CourseResult() {
+		
+	}
+
+	public CourseResult(CourseEnrolment courseEnrolment, Answer answer) {
+		this.courseEnrolment = courseEnrolment;
+		this.answer = answer;
+	}
 
 	public Long getId() {
 		return id;
@@ -53,5 +62,11 @@ public class CourseResult extends BaseDomain {
 	public void setAnswer(Answer answer) {
 		this.answer = answer;
 	}
-	
+
+	@Override
+	public String toString() {
+		return "CourseResult [id=" + id + ", courseEnrolment="
+				+ courseEnrolment.getId() + ", answer=" + answer.getId() + "]";
+	}
+
 }

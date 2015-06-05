@@ -1,19 +1,29 @@
 package com.adms.elearning.entity;
 
+import java.util.Date;
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
-import com.adms.common.domain.BaseDomain;
+import org.hibernate.annotations.Formula;
+
+import com.adms.common.domain.BaseAuditDomain;
 
 @Entity
 @Table(name="COURSE_ENROLMENT")
-public class CourseEnrolment extends BaseDomain {
+public class CourseEnrolment extends BaseAuditDomain {
 
 	private static final long serialVersionUID = 5044971945518545158L;
 
@@ -21,6 +31,10 @@ public class CourseEnrolment extends BaseDomain {
 	@Column(name="ID")
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
+	
+	@Column(name="EXAM_DATE")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date examDate;
 	
 	@ManyToOne
 	@JoinColumn(name="STUDENT")
@@ -35,13 +49,24 @@ public class CourseEnrolment extends BaseDomain {
 	private ExamType examType;
 	
 	@ManyToOne
-	@JoinColumn(name="CLASS_CODE", referencedColumnName="CLASS_CODE")
-	private ClassRoom classRoom;
-	
-	@ManyToOne
 	@JoinColumn(name="COURSE")
 	private Course course;
-
+	
+	@OneToMany(fetch=FetchType.LAZY, mappedBy="courseEnrolment", cascade=CascadeType.ALL)
+	private List<CourseResult> courseResults;
+	
+	@Formula("(select count(o.id) "
+			+ " from COURSE_RESULT o "
+			+ "	inner join ANSWER a on o.answer = a.id"
+			+ " where o.COURSE_ENROLMENT = id"
+			+ " and a.ANSWER_TYPE = 'CORRECT_ANS')")
+	private int marks;
+	
+	@Formula("(select count(o.id) "
+			+ " from COURSE_RESULT o "
+			+ " where o.COURSE_ENROLMENT = id)")
+	private int fullMarks;
+	
 	public Long getId() {
 		return id;
 	}
@@ -74,20 +99,51 @@ public class CourseEnrolment extends BaseDomain {
 		this.examType = examType;
 	}
 
-	public ClassRoom getClassRoom() {
-		return classRoom;
-	}
-
-	public void setClassRoom(ClassRoom classRoom) {
-		this.classRoom = classRoom;
-	}
-
 	public Course getCourse() {
 		return course;
 	}
 
 	public void setCourse(Course course) {
 		this.course = course;
+	}
+
+	public Date getExamDate() {
+		return examDate;
+	}
+
+	public void setExamDate(Date examDate) {
+		this.examDate = examDate;
+	}
+
+	public List<CourseResult> getCourseResults() {
+		return courseResults;
+	}
+
+	public void setCourseResults(List<CourseResult> courseResults) {
+		this.courseResults = courseResults;
+	}
+
+	public int getMarks() {
+		return marks;
+	}
+
+	public void setMarks(int marks) {
+		this.marks = marks;
+	}
+
+	public int getFullMarks() {
+		return fullMarks;
+	}
+
+	public void setFullMarks(int fullMarks) {
+		this.fullMarks = fullMarks;
+	}
+
+	@Override
+	public String toString() {
+		return "CourseEnrolment [id=" + id + ", examDate=" + examDate
+				+ ", student=" + student + ", examLevel=" + examLevel
+				+ ", examType=" + examType + ", course=" + course + "]";
 	}
 	
 }

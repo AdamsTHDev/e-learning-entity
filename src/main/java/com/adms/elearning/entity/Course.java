@@ -5,6 +5,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.adms.common.domain.BaseDomain;
@@ -25,6 +27,10 @@ public class Course extends BaseDomain {
 	
 	@Column(name="COURSE_DESCRIPTION")
 	private String courseDescription;
+	
+	@ManyToOne
+	@JoinColumn(name="CLASS_CODE", referencedColumnName="CLASS_CODE")
+	private ClassRoom classRoom;
 
 	public Long getId() {
 		return id;
@@ -48,6 +54,14 @@ public class Course extends BaseDomain {
 
 	public void setCourseDescription(String courseDescription) {
 		this.courseDescription = courseDescription;
+	}
+
+	public ClassRoom getClassRoom() {
+		return classRoom;
+	}
+
+	public void setClassRoom(ClassRoom classRoom) {
+		this.classRoom = classRoom;
 	}
 	
 }
