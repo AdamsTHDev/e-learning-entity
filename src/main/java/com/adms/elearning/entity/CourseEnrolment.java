@@ -31,42 +31,46 @@ public class CourseEnrolment extends BaseAuditDomain {
 	@Column(name="ID")
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@Column(name="EXAM_DATE")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date examDate;
-	
+
 	@ManyToOne
 	@JoinColumn(name="STUDENT")
 	private Student student;
-	
+
 	@ManyToOne
 	@JoinColumn(name="EXAM_LEVEL_CODE", referencedColumnName="EXAM_LEVEL_CODE")
 	private ExamLevel examLevel;
-	
+
 	@ManyToOne
 	@JoinColumn(name="EXAM_TYPE_CODE", referencedColumnName="EXAM_TYPE_CODE")
 	private ExamType examType;
-	
+
 	@ManyToOne
 	@JoinColumn(name="COURSE")
 	private Course course;
-	
+
+	@ManyToOne
+	@JoinColumn(name="SECTION")
+	private Section section;
+
 	@OneToMany(fetch=FetchType.LAZY, mappedBy="courseEnrolment", cascade=CascadeType.ALL)
 	private List<CourseResult> courseResults;
-	
+
 	@Formula("(select count(o.id) "
 			+ " from COURSE_RESULT o "
 			+ "	inner join ANSWER a on o.answer = a.id"
 			+ " where o.COURSE_ENROLMENT = id"
 			+ " and a.ANSWER_TYPE = 'CORRECT_ANS')")
 	private int marks;
-	
+
 	@Formula("(select count(o.id) "
 			+ " from COURSE_RESULT o "
 			+ " where o.COURSE_ENROLMENT = id)")
 	private int fullMarks;
-	
+
 	public Long getId() {
 		return id;
 	}
@@ -139,11 +143,12 @@ public class CourseEnrolment extends BaseAuditDomain {
 		this.fullMarks = fullMarks;
 	}
 
-	@Override
-	public String toString() {
-		return "CourseEnrolment [id=" + id + ", examDate=" + examDate
-				+ ", student=" + student + ", examLevel=" + examLevel
-				+ ", examType=" + examType + ", course=" + course + "]";
+	public Section getSection() {
+		return section;
 	}
-	
+
+	public void setSection(Section section) {
+		this.section = section;
+	}
+
 }
